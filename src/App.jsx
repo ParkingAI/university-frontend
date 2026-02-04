@@ -1,13 +1,23 @@
 import { Button } from '@heroui/react'
+import { BrowserRouter } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+
+
+import Login from './pages/Login';
+import LandingPage from './pages/LandingPage';
+
+
 function App() {
 
   return (
-    
-    <div className='text-center'>
-      <h1 className='text-3xl mb-4'>Parkađoko</h1>
-      <Button color='primary'>test</Button>
-
-    </div>
+    <>
+    <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<LandingPage/>}/>
+      <Route path='/login' element={<Login/>}/>
+    </Routes>
+    </BrowserRouter>
+    </>
   )
 }
 
