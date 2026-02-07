@@ -1,8 +1,13 @@
 import React from 'react'
+import { useUserAuthorization } from '../hooks/UserAuthorization'
+
 
 const Dashboard = () => {
+
+  const {user} = useUserAuthorization()
   return (
-    <div>Dashboard</div>
+    <div className='text-2xl text-center'>Dobrodošli {user?.email}</div>
+
   )
 }
 
