@@ -19,7 +19,7 @@ const SecureRoute = ({ userLevel: userLevel, element: element }) => {
           navigate("/login");
         }
       if (rola === userLevel) {
-      navigate("/dashboard")
+      navigate("/dashboard/parking")
    
     } else {
       navigate("/login")
