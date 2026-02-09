@@ -15,6 +15,8 @@
     "@tanstack/react-query": "^5.90.20",
     "axios": "^1.13.2",
     "framer-motion": "^12.27.5",
+    "leaflet": "^1.9.4",
+    "mapbox-gl": "^3.18.1",
     "react": "^19.2.0",
     "react-cookie": "^8.0.1",
     "react-dom": "^19.2.0",
