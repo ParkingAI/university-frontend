@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const fetchCities = async () => {
   try {
-    const response = await axios.get(`${import.meta.env.VITE_API_URL}/cities`);
+    const response = await axios.get(`${import.meta.env.VITE_API_URL}/city`);
     return response.data;
   } catch (err) {
     throw err;
@@ -10,12 +10,10 @@ export const fetchCities = async () => {
 };
 
 export const fetchCity = async (id) => {
-  console.log(id);
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}/cities/${id}`,
+      `${import.meta.env.VITE_API_URL}/city/${id}`,
     );
-
     return response.data;
   } catch (err) {
     throw err;

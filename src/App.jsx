@@ -7,6 +7,7 @@ import SecureRoute from "./hooks/SecureRoute.jsx";
 import Login from "./pages/Login";
 import LandingPage from "./pages/LandingPage.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
+import CityParkingsPage from "./pages/CityParkingsPage.jsx";
 
 function App() {
   const queryClient = new QueryClient();
@@ -18,6 +19,10 @@ function App() {
           <UserAuthorization>
             <Routes>
               <Route path="/" element={<LandingPage />} />
+              <Route
+                path="/:city/:id/parkiralista/"
+                element={<CityParkingsPage />}
+              />
 
               <Route path="/login" element={<Login />} />
               <Route

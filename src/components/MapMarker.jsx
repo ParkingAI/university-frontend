@@ -9,6 +9,7 @@ const MapMarker = ({ map, city, onClick }) => {
   const contentRef = React.useRef(document.createElement("div"));
 
   React.useEffect(() => {
+    if (!map) return;
     const marker = (markerRef.current = new mapboxgl.Marker()
       .setLngLat(coordinates)
       .addTo(map));

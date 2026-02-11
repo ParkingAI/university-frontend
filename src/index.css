@@ -3,3 +3,17 @@
 /* Note: You may need to change the path to fit your project structure */
 @source '../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
 @custom-variant dark (&:is(.dark *));
+
+.mapboxgl-popup-close-button {
+  font-size: 22px;
+  color: #4b5563;
+  padding-right: 15px;
+  padding-top: 5px;
+}
+
+.mapboxgl-popup-close-button,
+.mapboxgl-popup-close-button:hover,
+.mapboxgl-popup-close-button:focus {
+  box-shadow: none !important;
+  background: none !important;
+}

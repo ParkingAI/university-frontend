@@ -4,10 +4,11 @@ import { createPortal } from "react-dom";
 import { fetchCity } from "../api/cityApi";
 import { useQuery } from "@tanstack/react-query";
 import { Button, Spinner } from "@heroui/react";
+import { useNavigate } from "react-router-dom";
 
-const MapMarkerPopup = ({ map, activeCity }) => {
-  const { data, isLoading } = useQuery({
-    queryKey: ["city", activeCity?.id], //srediti odmah da vraca sve potrebno, pa da tamo na drugom samo pogodi cache?
+const MapMarkerPopup = ({ map, activeCity, setActiveCity }) => {
+  const { data, isFetching } = useQuery({
+    queryKey: ["city", activeCity.id],
     queryFn: () => fetchCity(activeCity?.id),
     staleTime: 1000 * 60 * 60 * 24,
     refetchOnMount: false,
@@ -15,15 +16,17 @@ const MapMarkerPopup = ({ map, activeCity }) => {
   });
   const popupRef = React.useRef();
   const contentRef = React.useRef(document.createElement("div"));
+  const navigate = useNavigate();
 
   React.useEffect(() => {
-    //stilizirati popup
     if (!map) return;
 
     popupRef.current = new mapboxgl.Popup({
       closeOnClick: false,
-      offset: 25,
+      offset: 40,
     });
+
+    popupRef.current.on("close", () => setActiveCity(null));
 
     return () => popupRef.current.remove();
   }, []);
@@ -37,20 +40,24 @@ const MapMarkerPopup = ({ map, activeCity }) => {
       .addTo(map);
   }, [activeCity]);
 
+  const handleNavigate = () => {
+    navigate(`${data.name.toLowerCase()}/${data.id}/parkiralista`); //mozda bolje slug da imamo u bazi, mada i ovo je lagani workaround
+  };
+
   return (
     <>
       {createPortal(
-        isLoading ? (
+        isFetching ? (
           <Spinner />
         ) : (
-          <div className="p-5 flex flex-col gap-2">
+          <div className="p-3 flex flex-col gap-1.5">
             <h4 className="font-bold text-xl text-gray-600 tracking-tight">
               Grad {data.name}
             </h4>
             <p className="text-lg text-gray-600 tracking-tight">
               Pokrivenih parkinga: {data.metadata.totalParkings}
             </p>
-            <Button fullWidth color="primary">
+            <Button onPress={handleNavigate} fullWidth color="primary">
               Pogledaj situaciju
             </Button>
           </div>

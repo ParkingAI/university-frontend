@@ -7,7 +7,7 @@ import MapMarker from "./MapMarker.jsx";
 import MapMarkerPopup from "./MapMarkerPopup.jsx";
 
 const LandingPageMap = () => {
-  const { data, isLoading } = useQuery({
+  const { data, isFetching } = useQuery({
     queryKey: ["cities"],
     queryFn: () => fetchCities(),
     staleTime: 1000 * 60 * 60 * 24,
@@ -19,7 +19,6 @@ const LandingPageMap = () => {
   const [activeCity, setActiveCity] = React.useState(null);
 
   React.useEffect(() => {
-    //srediti nestajanje markera, tooglanje markera i popupa
     mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current,
@@ -43,7 +42,7 @@ const LandingPageMap = () => {
         <h3 className="text-3xl font-extrabold text-gray-600 tracking-tight inline-block">
           Partnerski gradovi
         </h3>
-        <span className="ml-3">{isLoading && <Spinner />}</span>
+        <span className="ml-3">{isFetching && <Spinner />}</span>
       </div>
       <div
         id="map-container"
@@ -63,7 +62,11 @@ const LandingPageMap = () => {
           );
         })}
       {mapRef.current && activeCity && (
-        <MapMarkerPopup map={mapRef.current} activeCity={activeCity} />
+        <MapMarkerPopup
+          map={mapRef.current}
+          activeCity={activeCity}
+          setActiveCity={setActiveCity}
+        />
       )}
     </section>
   );
