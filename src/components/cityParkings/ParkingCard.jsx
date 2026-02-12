@@ -19,13 +19,12 @@ const ParkingCard = ({ data, onPress }) => {
     mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current,
-      center: [data.coordinates[1], data.coordinates[0]],
+      center: [data.coordinates[0], data.coordinates[1]],
       zoom: 15,
-      scrollZoom: false,
     });
 
     markerRef.current = new mapboxgl.Marker()
-      .setLngLat([data.coordinates[1], data.coordinates[0]])
+      .setLngLat([data.coordinates[0], data.coordinates[1]])
       .addTo(mapRef.current);
 
     return () => mapRef.current.remove();

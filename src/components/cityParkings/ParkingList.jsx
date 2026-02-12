@@ -7,6 +7,7 @@ import {
   ModalBody,
   ModalFooter,
 } from "@heroui/react";
+import ParkingModal from "./ParkingModal.jsx";
 
 const ParkingList = ({ data }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -25,16 +26,11 @@ const ParkingList = ({ data }) => {
           <ParkingCard key={item.id} data={item} onPress={handleOnPress} />
         ))}
       </div>
-      <Modal
+      <ParkingModal
         isOpen={isModalOpen}
-        onClose={() => handleOnPress({ isOpen: false, data: null })}
-      >
-        <ModalContent>
-          <ModalHeader></ModalHeader>
-          <ModalBody></ModalBody>
-          <ModalFooter></ModalFooter>
-        </ModalContent>
-      </Modal>
+        data={modalData}
+        onClose={handleOnPress}
+      />
     </div>
   );
 };
