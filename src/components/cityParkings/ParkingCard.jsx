@@ -37,6 +37,9 @@ const ParkingCard = ({ data, onPress }) => {
         </p>
         <p className="text-md text-gray-600 tracking-tight">{data.address}</p>
         <p className="text-md text-gray-600 tracking-tight">{data.zone}</p>
+        <p className="text-md text-gray-600 tracking-tight">
+          Vrsta parkirališa: {data.type}
+        </p>
       </CardHeader>
       <Divider />
       <CardBody>

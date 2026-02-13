@@ -1,22 +1,30 @@
 import React from "react";
 import ParkingCard from "./ParkingCard.jsx";
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from "@heroui/react";
 import ParkingModal from "./ParkingModal.jsx";
+import ActionsModal from "./ActionsModal.jsx";
 
 const ParkingList = ({ data }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [modalData, setModalData] = React.useState(null);
+  const [isActiosnModalOpen, setIsActionsModalOpen] = React.useState(false);
+  const [actionsModalData, setActionsModalData] = React.useState(false);
 
   const handleOnPress = (e) => {
     const { isOpen, data } = e;
     setIsModalOpen(isOpen);
     setModalData(data);
+  };
+
+  const handleOnActionsPress = (e) => {
+    const { isOpen, data } = e;
+    setIsActionsModalOpen(isOpen);
+    setActionsModalData(data);
+  };
+
+  const handleOnActionsClose = (e) => {
+    const { isOpen, data } = e;
+    setIsActionsModalOpen(isOpen);
+    setActionsModalData(data);
   };
 
   return (
@@ -30,6 +38,12 @@ const ParkingList = ({ data }) => {
         isOpen={isModalOpen}
         data={modalData}
         onClose={handleOnPress}
+        onPress={handleOnActionsPress}
+      />
+      <ActionsModal
+        isOpen={isActiosnModalOpen}
+        data={actionsModalData}
+        onClose={handleOnActionsClose}
       />
     </div>
   );
