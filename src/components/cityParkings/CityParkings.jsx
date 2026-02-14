@@ -14,9 +14,11 @@ const CityParkings = () => {
     queryKey: ["city-parkings", id],
     queryFn: () => getAllParkings(id),
     staleTime: 0,
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
+
+  //mjesto za useSSE hook koji cu napraviti za real time updates sa servera na update o podatcima sa parkinga, treba samo invalidirati cache key "cityi-parkings", id od useQury invalidacija (promjena) ce uzrokovati rerendering i azurni podatci ce biti prosljedeni childovima
 
   return (
     <div className="w-full flex flex-col gap-5 items-start">

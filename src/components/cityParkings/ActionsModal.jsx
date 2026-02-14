@@ -12,7 +12,9 @@ const ActionsModal = ({ isOpen, data, onClose }) => {
   return (
     <Modal
       isOpen={isOpen}
-      onClose={() => onClose({ isOpen: false, data: null })}
+      onClose={() =>
+        onClose({ modal: "actionsModal", isOpen: false, data: null })
+      }
     >
       <ModalContent>
         {data && (
@@ -36,7 +38,13 @@ const ActionsModal = ({ isOpen, data, onClose }) => {
                 <Button
                   color="primary"
                   variant="flat"
-                  onPress={() => onClose({ isOpen: false, data: null })}
+                  onPress={() =>
+                    onClose({
+                      modal: "actionsModal",
+                      isOpen: false,
+                      data: null,
+                    })
+                  }
                 >
                   Zatvori
                 </Button>

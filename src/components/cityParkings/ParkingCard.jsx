@@ -38,7 +38,7 @@ const ParkingCard = ({ data, onPress }) => {
         <p className="text-md text-gray-600 tracking-tight">{data.address}</p>
         <p className="text-md text-gray-600 tracking-tight">{data.zone}</p>
         <p className="text-md text-gray-600 tracking-tight">
-          Vrsta parkirališa: {data.type}
+          Tip parkirališa: {data.type}
         </p>
       </CardHeader>
       <Divider />
@@ -68,7 +68,9 @@ const ParkingCard = ({ data, onPress }) => {
           size="md"
           fullWidth
           className="font-bold"
-          onPress={() => onPress({ isOpen: true, data: data })}
+          onPress={() =>
+            onPress({ modal: "parkingModal", isOpen: true, data: data })
+          }
         >
           Detaljniji pregled
         </Button>

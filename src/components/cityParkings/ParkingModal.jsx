@@ -42,6 +42,7 @@ const Actions = ({ data, onPress }) => {
             isIconOnly
             onPress={() =>
               onPress({
+                modal: "actionsModal",
                 isOpen: true,
                 data: {
                   mode: "vizualization",
@@ -64,6 +65,7 @@ const Actions = ({ data, onPress }) => {
             isIconOnly
             onPress={() =>
               onPress({
+                modal: "actionsModal",
                 isOpen: true,
                 data: {
                   mode: "reservation",
@@ -103,7 +105,9 @@ const ParkingModal = ({ isOpen, data, onClose, onPress }) => {
   return (
     <Modal
       isOpen={isOpen}
-      onClose={() => onClose({ isOpen: false, data: null })}
+      onClose={() =>
+        onClose({ modal: "parkingModal", isOpen: false, data: null })
+      }
       size="xl"
       isDismissable={false}
       isKeyboardDismissDisabled
@@ -153,7 +157,13 @@ const ParkingModal = ({ isOpen, data, onClose, onPress }) => {
               </Table>
             </ModalBody>
             <ModalFooter>
-              <Button color="primary" variant="flat">
+              <Button
+                onPress={() =>
+                  onClose({ modal: "parkingModal", isOpen: false, data: null })
+                }
+                color="primary"
+                variant="flat"
+              >
                 Zatvori
               </Button>
             </ModalFooter>

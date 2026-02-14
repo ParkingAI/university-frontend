@@ -4,27 +4,26 @@ import ParkingModal from "./ParkingModal.jsx";
 import ActionsModal from "./ActionsModal.jsx";
 
 const ParkingList = ({ data }) => {
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [modalData, setModalData] = React.useState(null);
-  const [isActiosnModalOpen, setIsActionsModalOpen] = React.useState(false);
-  const [actionsModalData, setActionsModalData] = React.useState(false);
+  const [modalsData, setModalsData] = React.useState({
+    parkingModal: {
+      isOpen: false,
+      data: null,
+    },
+    actionsModal: {
+      isOpen: false,
+      data: null,
+    },
+  });
 
   const handleOnPress = (e) => {
-    const { isOpen, data } = e;
-    setIsModalOpen(isOpen);
-    setModalData(data);
-  };
-
-  const handleOnActionsPress = (e) => {
-    const { isOpen, data } = e;
-    setIsActionsModalOpen(isOpen);
-    setActionsModalData(data);
-  };
-
-  const handleOnActionsClose = (e) => {
-    const { isOpen, data } = e;
-    setIsActionsModalOpen(isOpen);
-    setActionsModalData(data);
+    const { modal, isOpen, data } = e;
+    setModalsData((prev) => ({
+      ...prev,
+      [modal]: {
+        isOpen,
+        data,
+      },
+    }));
   };
 
   return (
@@ -35,15 +34,15 @@ const ParkingList = ({ data }) => {
         ))}
       </div>
       <ParkingModal
-        isOpen={isModalOpen}
-        data={modalData}
+        isOpen={modalsData.parkingModal.isOpen}
+        data={modalsData.parkingModal.data}
         onClose={handleOnPress}
-        onPress={handleOnActionsPress}
+        onPress={handleOnPress}
       />
       <ActionsModal
-        isOpen={isActiosnModalOpen}
-        data={actionsModalData}
-        onClose={handleOnActionsClose}
+        isOpen={modalsData.actionsModal.isOpen}
+        data={modalsData.actionsModal.data}
+        onClose={handleOnPress}
       />
     </div>
   );
