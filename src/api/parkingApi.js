@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Function to get all parkings
-export const getAllParkings = async (cityId) => {
+ export const getAllParkings = async (cityId) => {
   try {
     const res = await axios.get(
       `${import.meta.env.VITE_API_URL}/parking/${cityId}`,
@@ -13,13 +13,12 @@ export const getAllParkings = async (cityId) => {
 };
 
 // Function to get single parking
-const getSingleParking = async (id) => {
-  try {
-    const res = await axios.get(
-      `${import.meta.env.VITE_API_URL}/parking/single/${id}`,
-    );
-    return res.data;
-  } catch (err) {
-    throw err;
-  }
-};
+export const getSingleParking =  async (id) =>{
+    try{
+        const res =  await axios.get(`${import.meta.env.VITE_API_URL}/parking/single/${id}`)
+        return res.data
+        
+    }catch(err){
+        throw err
+    }
+}
