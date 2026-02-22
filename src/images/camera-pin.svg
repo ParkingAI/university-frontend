@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="Camera pin">
+  <!-- Pin -->
+  <path
+    d="M32 2C20.4 2 11 11.4 11 23c0 15.2 21 39 21 39s21-23.8 21-39C53 11.4 43.6 2 32 2z"
+    fill="#FF8A3D"
+  />
+  
+  <!-- Camera body -->
+  <rect x="20" y="18" width="24" height="14" rx="3" fill="#FFFFFF"/>
+  
+  <!-- Camera lens -->
+  <circle cx="32" cy="25" r="5" fill="#FF8A3D"/>
+</svg>

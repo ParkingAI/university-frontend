@@ -7,7 +7,7 @@ import {MapIcon, CameraIcon, AccountIcon, LogoutIcon} from "../images/SidebarIco
 const navItems = [
   { label: "Parkinzi", path: "/dashboard/parking", icon: <MapIcon /> },
   { label: "Kamere", path: "/dashboard/kamere", icon: <CameraIcon /> },
-  { label: "Račun", path: "/dashboard/racun", icon: <AccountIcon />, disabled: true },
+  { label: "Račun", path: "/dashboard/racun", icon: <AccountIcon /> },
 ];
 
 const Sidebar = () => {

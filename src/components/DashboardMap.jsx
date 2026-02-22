@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { pin } from "../images/icon.js"
+import { pin, cameraPin } from "../images/icon.js"
+import { useMap } from "../hooks/MapContext.jsx";
 
 const defaultRenderPopup = (item) => (
   <div className="min-w-[180px]">
@@ -10,11 +11,51 @@ const defaultRenderPopup = (item) => (
   </div>
 );
 
+const RegisteredMarker = ({ item, renderPopup, icon }) => {
+  const { registerMarker, unregisterMarker } = useMap();
+
+  const markerRef = useCallback((node) => {
+    if (node) {
+      registerMarker(item.id, node);
+    } else {
+      unregisterMarker(item.id);
+    }
+  }, [item.id, registerMarker, unregisterMarker]);
+
+  return (
+    <Marker
+      ref={markerRef}
+      position={[item?.coordinates[1], item?.coordinates[0]]}
+      icon={icon}
+    >
+      <Popup>
+        {renderPopup(item)}
+      </Popup>
+    </Marker>
+  );
+};
+
 const DashboardMap = ({
   data = [],
   dataType = "parkings",
+  searchKeys = ["name", "address", "zone"],
   renderPopup = defaultRenderPopup,
 }) => {
+  const { searchQuery } = useMap();
+
+  const markerIcon = dataType === 'cameras' ? cameraPin : pin;
+
+  const filteredData = useMemo(() => {
+    if (!searchQuery) return data;
+    const lower = searchQuery.toLowerCase();
+    return data.filter((item) =>
+      searchKeys.some((key) => {
+        const val = item[key];
+        return val != null && String(val).toLowerCase().includes(lower);
+      })
+    );
+  }, [data, searchQuery, searchKeys]);
+
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
       <div className="px-5 py-4 border-b border-gray-100">
@@ -28,16 +69,13 @@ const DashboardMap = ({
           center={[45.32425078861556, 13.576257]}
           zoom={12}
         >
-          {data.map((item) => (
-            <Marker
+          {filteredData.map((item) => (
+            <RegisteredMarker
               key={item.id}
-              position={[item?.coordinates[1], item?.coordinates[0]]}
-              icon={pin}
-            >
-              <Popup>
-                {renderPopup(item)}
-              </Popup>
-            </Marker>
+              item={item}
+              renderPopup={renderPopup}
+              icon={markerIcon}
+            />
           ))}
 
           <TileLayer url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" />

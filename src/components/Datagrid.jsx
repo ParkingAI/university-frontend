@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import {
   Table,
   TableHeader,
@@ -8,11 +8,22 @@ import {
   TableCell,
 } from "@heroui/react";
 import {EyeIcon, EditIcon, DeleteIcon} from "../images/datagridIcons.jsx"
-
-
+import SearchInput from "./SearchInput.jsx";
+import { useMap } from "../hooks/MapContext.jsx";
 
 const defaultRenderCell = (item, columnKey) => {
   return item[columnKey];
+};
+
+const filterData = (data, query, searchKeys) => {
+  if (!query) return data;
+  const lower = query.toLowerCase();
+  return data.filter((item) =>
+    searchKeys.some((key) => {
+      const val = item[key];
+      return val != null && String(val).toLowerCase().includes(lower);
+    })
+  );
 };
 
 const Datagrid = ({
@@ -21,9 +32,15 @@ const Datagrid = ({
   renderCell = defaultRenderCell,
   title = "",
   ariaLabel = "Data table",
-  searchKeys = ["name", "address"],
+  searchKeys = ["name", "address", "zone"],
 }) => {
   
+  const { searchQuery, setSearchQuery } = useMap();
+
+  const filteredData = useMemo(
+    () => filterData(data, searchQuery, searchKeys),
+    [data, searchQuery, searchKeys]
+  );
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
@@ -33,15 +50,10 @@ const Datagrid = ({
         </div>
       )}
       <div className="px-4 pt-3 pb-1 flex items-center justify-between">
-        <input
-          type="text"
-          placeholder="Pretraži..."
-          className="w-75 text-sm px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 outline-none focus:border-blue-400 focus:bg-white transition-colors"
-        />
-    
+        <SearchInput value={searchQuery} onChange={setSearchQuery} />
       </div>
       <div className="p-3">
-        <Table aria-label={ariaLabel}  isStriped>
+        <Table aria-label={ariaLabel} isStriped>
           <TableHeader columns={columns}>
             {(column) => (
               <TableColumn key={column.uid} align={column.uid === "actions" ? "center" : "start"}>
@@ -49,7 +61,7 @@ const Datagrid = ({
               </TableColumn>
             )}
           </TableHeader>
-          <TableBody items={data} emptyContent="Nema podataka za prikaz.">
+          <TableBody items={filteredData} emptyContent="Nema podataka za prikaz.">
             {(item) => (
               <TableRow key={item.id}>
                 {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { Input, Button, Form, Alert } from "@heroui/react";
-import logo from "../images/Parking-logo.png"
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from "react-cookie";
 import { userLogin } from "../api/auth.js"
@@ -39,17 +38,24 @@ const Login = () => {
     const submitForm = async (event) => {
         try {
             const response = await userLogin(formData);
-            if (response.status === 200 && response) {
+            if (response.status === 200) {
                 setUser(response.data.user);
                 setMessage("Uspješna prijava");
-                 setStatusCode(response.status);
-
+                setStatusCode(response.status);
             } else {
-               setStatusCode(response?.response?.status ?? 500);
-            setMessage(response?.response?.data ?? "Greška na serveru!");
+                const errStatus = response?.response?.status ?? 500;
+                const errData = response?.response?.data;
+                const errMessage = typeof errData === "string" ? errData
+                    : "Pogrešni podaci za prijavu!";
+                setStatusCode(errStatus);
+                setMessage(errMessage);
             }
         } catch (error) {
-
+            const errData = error?.response?.data;
+            const errMessage = typeof errData === "string" ? errData
+                : "Greška na serveru!";
+            setStatusCode(error?.response?.status ?? 500);
+            setMessage(errMessage);
         }
     };
 
@@ -57,12 +63,15 @@ const Login = () => {
         <div className="min-h-screen flex items-center justify-center">
             <div className='w-110 mx-auto shadow-md rounded-xl p-7 items-center text-center'>
 
-                <img className=" w-64 mx-auto" src={logo}></img>
-                <h1 className='text-xl'>Prijava u sustav</h1>
+                 <h1 className="text-4xl font-extrabold tracking-tight cursor-pointer">
+            <span className="text-gray-700">Parking</span>
+            <span className="text-blue-500 ml-1">AI</span>
+          </h1>
+                <h2 className='text-xl mt-10 -'>Prijava u sustav</h2>
 
 
                 {message && (
-                    <div className={"w-full"}>
+                    <div className={"w-full mt-3 mb-3"}>
                         {statusCode ? (
                             <Alert
                                 isClosable

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useUserAuthorization } from "../hooks/UserAuthorization.jsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const SecureRoute = ({ userLevel: userLevel, element: element }) => {
   const { user, isLoadingUser, userLogout } = useUserAuthorization();
   const [ isAllowed, setIsAllowed ] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (!isLoadingUser) {
@@ -17,14 +18,14 @@ const SecureRoute = ({ userLevel: userLevel, element: element }) => {
         if (!rola) {
           userLogout();
           navigate("/login");
+        } else if (rola === userLevel) {
+          if (location.pathname === "/dashboard" || location.pathname === "/dashboard/") {
+            navigate("/dashboard/parking");
+          }
+        } else {
+          userLogout();
+          navigate("/login");
         }
-      if (rola === userLevel) {
-      navigate("/dashboard/parking")
-   
-    } else {
-      navigate("/login")
-      userLogout();
-    }
       }
     }
   }, [isLoadingUser]);

@@ -14,6 +14,7 @@ const LandingPageMap = () => {
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   });
+  console.log(data)
   const mapRef = React.useRef();
   const mapContainerRef = React.useRef();
   const [activeCity, setActiveCity] = React.useState(null);
