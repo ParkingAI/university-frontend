@@ -3,7 +3,7 @@ import DashboardMap from '../components/DashboardMap'
 import Datagrid from '../components/Datagrid.jsx'
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAllParkings } from "../api/parkingApi.js"
-import { getStreams } from "../api/streamApi.js"
+import { getStreams, controlStream } from "../api/streamApi.js"
 import { useUserAuthorization } from '../hooks/UserAuthorization.jsx'
 import { Tooltip, Chip } from "@heroui/react";
 import { PlayIcon, StopIcon, RestartIcon, EyeIcon } from "../images/datagridIcons.jsx"
@@ -15,19 +15,29 @@ const CamerasDashboard = () => {
 
   const { user } = useUserAuthorization()
 
-  /*const { data: parkingData = [], isLoading, error } = useQuery({
-    queryKey: ["parkings", user?.cityId],
-    queryFn: () => getAllParkings(user?.cityId),
-    staleTime: 1000 * 60 * 60,
-    enabled: !!user?.cityId
-  });*/
-
   const { data: streamData = [] } = useQuery({
     queryKey: ["streams", user?.cityId],
     queryFn: () => getStreams(user?.cityId),
     staleTime: 1000 * 60 * 60,
     enabled: !!user?.cityId
   });
+
+  const STATUS_AFTER_ACTION = {
+    start:   "ACTIVE",
+    stop:    "PAUSED",
+    restart: "ACTIVE",
+  };
+
+  const sendControl = (streamId, action) => {
+    controlStream(streamId, action);
+    queryClient.setQueryData(["streams", user?.cityId], (old) =>
+      old.map((stream) =>
+        stream.id === streamId
+          ? { ...stream, status: STATUS_AFTER_ACTION[action] }
+          : stream
+      )
+    );
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -47,13 +57,16 @@ const CamerasDashboard = () => {
         title="Kamere"
         renderCell={(item, columnKey) => {
           if (columnKey === "status") {
+            const statusMap = {
+              ACTIVE:   { color: "success", label: "Aktivna" },
+              INACTIVE: { color: "default", label: "Neaktivna" },
+              PAUSED:   { color: "warning", label: "Pauzirana" },
+              ERROR:    { color: "danger",  label: "Greška" },
+            };
+            const { color, label } = statusMap[item.status] ?? { color: "default", label: item.status ?? "—" };
             return (
-              <Chip
-                size="sm"
-                variant="flat"
-                color={item.status ? "success" : "danger"}
-              >
-                {item.status ? "Aktivna" : "Neaktivna"}
+              <Chip size="sm" variant="flat" color={color}>
+                {label}
               </Chip>
             );
           }
@@ -77,17 +90,26 @@ const CamerasDashboard = () => {
                   </span>
                 </Tooltip>
                 <Tooltip color="success" content="Pokreni stream">
-                  <span className="text-lg text-success cursor-pointer active:opacity-50">
+                  <span
+                    className="text-lg text-success cursor-pointer active:opacity-50"
+                    onClick={() => sendControl(item.id, "start")}
+                  >
                     <PlayIcon />
                   </span>
                 </Tooltip>
                 <Tooltip color="danger" content="Zaustavi stream">
-                  <span className="text-lg text-danger cursor-pointer active:opacity-50">
+                  <span
+                    className="text-lg text-danger cursor-pointer active:opacity-50"
+                    onClick={() => sendControl(item.id, "stop")}
+                  >
                     <StopIcon />
                   </span>
                 </Tooltip>
                 <Tooltip content="Restartuj stream">
-                  <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                  <span
+                    className="text-lg text-default-400 cursor-pointer active:opacity-50"
+                    onClick={() => sendControl(item.id, "restart")}
+                  >
                     <RestartIcon />
                   </span>
                 </Tooltip>
