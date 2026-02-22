@@ -14,9 +14,10 @@ const LandingPageMap = () => {
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   });
-  console.log(data)
+
   const mapRef = React.useRef();
   const mapContainerRef = React.useRef();
+  const [mapReady, setMapReady] = React.useState(false);
   const [activeCity, setActiveCity] = React.useState(null);
 
   React.useEffect(() => {
@@ -27,7 +28,14 @@ const LandingPageMap = () => {
       zoom: 7,
     });
 
-    return () => mapRef.current.remove();
+    mapRef.current.on("load", () => {
+      setMapReady(true);
+    });
+
+    return () => {
+      mapRef.current.remove();
+      setMapReady(false);
+    };
   }, []);
 
   const handleActiveCity = (city) => {
@@ -50,7 +58,7 @@ const LandingPageMap = () => {
         ref={mapContainerRef}
         className="w-full min-h-[40vh] rounded-2xl overflow-hidden shadow-lg"
       />
-      {mapRef.current &&
+      {mapReady &&
         data &&
         data.map((item) => {
           return (
@@ -62,7 +70,7 @@ const LandingPageMap = () => {
             />
           );
         })}
-      {mapRef.current && activeCity && (
+      {mapReady && activeCity && (
         <MapMarkerPopup
           map={mapRef.current}
           activeCity={activeCity}

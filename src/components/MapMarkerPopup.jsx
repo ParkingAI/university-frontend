@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 const MapMarkerPopup = ({ map, activeCity, setActiveCity }) => {
   const { data, isFetching } = useQuery({
-    queryKey: ["city", activeCity.id],
+    queryKey: ["city", activeCity?.id],
     queryFn: () => fetchCity(activeCity?.id),
     staleTime: 1000 * 60 * 60 * 24,
     refetchOnMount: false,
@@ -29,7 +29,7 @@ const MapMarkerPopup = ({ map, activeCity, setActiveCity }) => {
     popupRef.current.on("close", () => setActiveCity(null));
 
     return () => popupRef.current.remove();
-  }, []);
+  }, [map]);
 
   React.useEffect(() => {
     if (!activeCity) return;
@@ -41,7 +41,7 @@ const MapMarkerPopup = ({ map, activeCity, setActiveCity }) => {
   }, [activeCity]);
 
   const handleNavigate = () => {
-    navigate(`${data.name.toLowerCase()}/${data.id}/parkiralista`); //mozda bolje slug da imamo u bazi, mada i ovo je lagani workaround
+    navigate(`${data?.name.toLowerCase()}/${data?.id}/parkiralista`);
   };
 
   return (
@@ -57,7 +57,12 @@ const MapMarkerPopup = ({ map, activeCity, setActiveCity }) => {
             <p className="text-lg text-gray-600 tracking-tight">
               Pokrivenih parkinga: {data.metadata.totalParkings}
             </p>
-            <Button onPress={handleNavigate} fullWidth color="primary">
+            <Button
+              onPress={handleNavigate}
+              fullWidth
+              color="primary"
+              className="font-bold"
+            >
               Pogledaj situaciju
             </Button>
           </div>

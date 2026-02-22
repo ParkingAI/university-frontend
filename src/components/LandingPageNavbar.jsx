@@ -8,7 +8,6 @@ import {
   NavbarMenu,
   NavbarMenuItem,
   Link,
-  Button,
 } from "@heroui/react";
 
 const LandingPageNavbar = () => {
@@ -36,7 +35,6 @@ const LandingPageNavbar = () => {
     <Navbar
       classNames={{
         wrapper: "px-0",
-        menu: "px-4",
       }}
       maxWidth="full"
       isBordered
@@ -70,11 +68,6 @@ const LandingPageNavbar = () => {
         </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end" className="gap-0">
-        <NavbarItem className="hidden sm:flex">
-          <Button as={Link} color="primary" href="/login" variant="flat">
-            Prijava
-          </Button>
-        </NavbarItem>
         <NavbarMenuToggle className="sm:hidden cursor-pointer" />
       </NavbarContent>
       <NavbarMenu>
@@ -82,6 +75,7 @@ const LandingPageNavbar = () => {
           <Link
             href="#projekt"
             color={checkIfIsActive("#projekt") ? "primary" : "foreground"}
+            onPress={() => setIsMenuOpen(false)}
           >
             Projekt
           </Link>
@@ -90,15 +84,11 @@ const LandingPageNavbar = () => {
           <Link
             href="#gradovi"
             color={checkIfIsActive("#gradovi") ? "primary" : "foreground"}
+            onPress={() => setIsMenuOpen(false)}
           >
             Gradovi
           </Link>
         </NavbarMenuItem>
-        <NavbarItem>
-          <Button as={Link} color="primary" href="/login" variant="flat">
-            Prijava
-          </Button>
-        </NavbarItem>
       </NavbarMenu>
     </Navbar>
   );

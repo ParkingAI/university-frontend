@@ -1,38 +1,32 @@
 import React from "react";
 import mapboxgl from "mapbox-gl";
-import { createPortal } from "react-dom";
 
 const MapMarker = ({ map, city, onClick }) => {
   const { coordinates } = city;
 
- const markerRef = React.useRef();
- const contentRef = React.useRef(document.createElement("div"));
- console.log(coordinates)
-  React.useEffect(() => {
-    if (!map) return;
-    const marker = (markerRef.current = new mapboxgl.Marker()
-      .setLngLat(coordinates)
-      .addTo(map));
+  const markerRef = React.useRef();
 
-    const el = marker.getElement();
+  React.useEffect(() => {
+    if (!map) return;
+    const marker = (markerRef.current = new mapboxgl.Marker()
+      .setLngLat(coordinates)
+      .addTo(map));
 
-    const handleClick = () => {
-      onClick(city);
-    };
+    const el = marker.getElement();
 
-    el.addEventListener("click", handleClick);
+    const handleClick = () => {
+      onClick(city);
+    };
 
-    return () => markerRef.current.remove();
-  }, []);
+    el.addEventListener("click", handleClick);
 
-  return (
-    <>
-      {createPortal(
-        <div onClick={() => onClick(city)}></div>,
-        contentRef.current,
-      )}
-    </>
-  );
+    return () => {
+      markerRef.current.remove();
+      el.removeEventListener("click", handleClick);
+    };
+  }, [map]);
+
+  return null;
 };
 
 export default MapMarker;

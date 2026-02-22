@@ -1,7 +1,7 @@
-import React from "react";
 import LandingPageNavbar from "../components/LandingPageNavbar";
 import LandingPageHero from "../components/LandingPageHero";
 import LandingPageMap from "../components/LandingPageMap";
+import LandingPageFooter from "../components/LandingPageFooter";
 
 const LandingPage = () => {
   return (
@@ -9,6 +9,7 @@ const LandingPage = () => {
       <LandingPageNavbar />
       <LandingPageHero />
       <LandingPageMap />
+      <LandingPageFooter />
     </div>
   );
 };
