@@ -29,9 +29,13 @@ const ParkingList = ({ data }) => {
   return (
     <div className="w-full">
       <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">
-        {data.map((item) => (
-          <ParkingCard key={item.id} data={item} onPress={handleOnPress} />
-        ))}
+        {data.length === 0 ? (
+          <p>Nema parkinga za prikazati</p>
+        ) : (
+          data.map((item) => (
+            <ParkingCard key={item.id} data={item} onPress={handleOnPress} />
+          ))
+        )}
       </div>
       <ParkingModal
         isOpen={modalsData.parkingModal.isOpen}
