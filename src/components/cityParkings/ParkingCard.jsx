@@ -20,7 +20,8 @@ const ParkingCard = ({ data, onPress }) => {
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current,
       center: [data.coordinates[0], data.coordinates[1]],
-      zoom: 15,
+      zoom: 16,
+      scrollZoom: false,
     });
 
     markerRef.current = new mapboxgl.Marker()

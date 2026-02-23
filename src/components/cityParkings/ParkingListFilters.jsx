@@ -117,7 +117,7 @@ const ParkingListFilters = ({ filters, onFiltersChange }) => {
         }}
         popoverProps={{
           classNames: {
-            content: "w-fit",
+            content: "",
           },
         }}
         isClearable

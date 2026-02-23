@@ -83,6 +83,8 @@ const Actions = ({ data, onPress }) => {
 };
 
 const ParkingModal = ({ isOpen, data, onClose, onPress }) => {
+  const [isSelected, setIsSelected] = React.useState(true);
+
   const renderCell = React.useCallback((parkingLot, columnKey) => {
     const cellValue =
       parkingLot[columnKey] !== undefined ? parkingLot[columnKey] : null;
@@ -102,18 +104,28 @@ const ParkingModal = ({ isOpen, data, onClose, onPress }) => {
     }
   }, []);
 
+  const parkingLots = React.useMemo(() => {
+    if (!data?.parking_lots) return;
+    return isSelected
+      ? data.parking_lots.filter((item) => item.status === true)
+      : data.parking_lots;
+  }, [data, isSelected]);
+
   return (
     <Modal
       isOpen={isOpen}
       onClose={() =>
-        onClose({ modal: "parkingModal", isOpen: false, data: null })
+        onClose(
+          { modal: "parkingModal", isOpen: false, data: null },
+          setIsSelected(true),
+        )
       }
       size="xl"
       isDismissable={false}
       isKeyboardDismissDisabled
     >
       <ModalContent>
-        {data && (
+        {data && parkingLots && (
           <>
             <ModalHeader className="flex flex-col gap-1.5">
               <h3 className="text-xl font-extrabold text-gray-600 tracking-tight">
@@ -136,7 +148,14 @@ const ParkingModal = ({ isOpen, data, onClose, onPress }) => {
                 className="max-h-62.5"
                 topContent={
                   <div className="w-full">
-                    <Switch isSelected>Prikaži samo slobodne</Switch>
+                    <Switch
+                      isSelected={isSelected}
+                      onValueChange={(e) => {
+                        setIsSelected(e);
+                      }}
+                    >
+                      Prikaži samo slobodne
+                    </Switch>
                   </div>
                 }
               >
@@ -145,7 +164,7 @@ const ParkingModal = ({ isOpen, data, onClose, onPress }) => {
                     <TableColumn key={column.key}>{column.label}</TableColumn>
                   )}
                 </TableHeader>
-                <TableBody items={data.parking_lots}>
+                <TableBody items={parkingLots}>
                   {(item) => (
                     <TableRow key={item.id}>
                       {(columnKey) => (
@@ -159,7 +178,10 @@ const ParkingModal = ({ isOpen, data, onClose, onPress }) => {
             <ModalFooter>
               <Button
                 onPress={() =>
-                  onClose({ modal: "parkingModal", isOpen: false, data: null })
+                  onClose(
+                    { modal: "parkingModal", isOpen: false, data: null },
+                    setIsSelected(true),
+                  )
                 }
                 color="primary"
                 variant="flat"

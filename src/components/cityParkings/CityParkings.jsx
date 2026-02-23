@@ -1,5 +1,5 @@
 import React from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAllParkings } from "../../api/parkingApi.js";
 import { useParams } from "react-router";
 import { capitalizeRouteParam } from "../../../helpers/cityParkings.js";
@@ -17,6 +17,7 @@ const CityParkings = () => {
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   });
+  const queryClient = useQueryClient();
   const [filters, setFilters] = React.useState({
     search: null,
     availability: null,
@@ -24,7 +25,22 @@ const CityParkings = () => {
     type: null,
   });
 
-  //mjesto za useSSE hook koji cu napraviti za real time updates sa servera na update o podatcima sa parkinga, treba samo invalidirati cache key "cityi-parkings", id od useQury invalidacija (promjena) ce uzrokovati rerendering i azurni podatci ce biti prosljedeni childovima
+  React.useEffect(() => {
+    if (!id) return;
+    const es = new EventSource(
+      `${import.meta.env.VITE_API_URL}/parking-sse/${id}`,
+      {
+        heartbeatTimeout: 60000,
+      },
+    );
+
+    es.onmessage = (e) => {
+      const data = JSON.parse(e.data);
+      queryClient.setQueryData(["city-parkings", id], data);
+    };
+
+    return () => es.close();
+  }, [id]);
 
   const filteredData = React.useMemo(() => {
     if (!data) return;
