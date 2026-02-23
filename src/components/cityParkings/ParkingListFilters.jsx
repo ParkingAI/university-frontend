@@ -115,11 +115,6 @@ const ParkingListFilters = ({ filters, onFiltersChange }) => {
           trigger: "min-h-9 w-full md:w-[200px]",
           base: "min-h-9 w-full md:w-[200px]",
         }}
-        popoverProps={{
-          classNames: {
-            content: "",
-          },
-        }}
         isClearable
         placeholder="Dostupnost"
         items={availabilitySelectItems}
