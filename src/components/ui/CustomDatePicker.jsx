@@ -127,9 +127,7 @@ export function CustomDatePicker({ label, value, onChange }) {
           </PopoverContent>
         </Popover>
         {isTimeInvalid && (
-          <p className="text-danger text-sm">
-            Početak mora biti veći od kraja.
-          </p>
+          <p className="text-danger text-sm">Kraj mora biti nakon početka.</p>
         )}
       </I18nProvider>
     </div>

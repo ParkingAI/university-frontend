@@ -55,7 +55,7 @@ const MapMarkerPopup = ({ map, activeCity, setActiveCity }) => {
               Grad {data.name}
             </h4>
             <p className="text-lg text-gray-600 tracking-tight">
-              Pokrivenih parkinga: {data.metadata.totalParkings}
+              Pokrivenih parkinga: {data.totalParkings}
             </p>
             <Button
               onPress={handleNavigate}

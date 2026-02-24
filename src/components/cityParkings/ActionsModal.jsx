@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -9,7 +9,22 @@ import {
 } from "@heroui/react";
 import { Image } from "@heroui/react";
 import { CustomDatePicker } from "../ui/CustomDatePicker";
+import { useMutation } from "@tanstack/react-query";
+import { createReservation } from "../../api/reservationsApi.js";
+
 const ActionsModal = ({ isOpen, data, onClose }) => {
+  const { mutate: mutateCreateReservation } = useMutation({
+    mutationFn: createReservation,
+    onSuccess: (data) => {
+      window.location.href = data.sessionUrl;
+    },
+    onError: (err) => {
+      if (err.response.status === 409) {
+        setIsConflict(true);
+      }
+    },
+  });
+  const [isConflict, setIsConflict] = useState(false);
   const [reservationTime, setReservationTime] = React.useState({
     date: null,
     startTime: null,
@@ -37,6 +52,7 @@ const ActionsModal = ({ isOpen, data, onClose }) => {
           startTime: null,
           endTime: null,
         });
+        setIsConflict(false);
       }}
     >
       <ModalContent>
@@ -59,6 +75,12 @@ const ActionsModal = ({ isOpen, data, onClose }) => {
                     value={reservationTime}
                     onChange={setReservationTime}
                   />
+                  {isConflict && (
+                    <p className="text-danger font-semibold">
+                      Rezervacija nije moguća, postoji rezervacija sa zauzetim
+                      vremenom!
+                    </p>
+                  )}
                 </>
               )}
             </ModalBody>
@@ -93,6 +115,7 @@ const ActionsModal = ({ isOpen, data, onClose }) => {
                         startTime: null,
                         endTime: null,
                       });
+                      setIsConflict(false);
                     }}
                   >
                     Zatvori
@@ -101,6 +124,14 @@ const ActionsModal = ({ isOpen, data, onClose }) => {
                     color="primary"
                     variant="flat"
                     isDisabled={isActionDisabled}
+                    onPress={() => {
+                      mutateCreateReservation({
+                        parkingLotId: data.id,
+                        date: reservationTime.date,
+                        startTime: reservationTime.startTime,
+                        endTime: reservationTime.endTime,
+                      });
+                    }}
                   >
                     Spremi
                   </Button>
