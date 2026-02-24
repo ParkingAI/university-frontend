@@ -40,7 +40,7 @@ const CityParkings = () => {
     };
 
     return () => es.close();
-  }, [id]);
+  }, [id, queryClient]);
 
   const filteredData = React.useMemo(() => {
     if (!data) return;
