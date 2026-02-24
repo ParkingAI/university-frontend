@@ -9,9 +9,13 @@ import {
   Chip,
   Divider,
 } from "@heroui/react";
+import useStreamSingleSSE from "../api/streamSingleSSE.js";
 
 const CameraDataModal = ({ isOpen, data, onClose }) => {
-  if (!data) return null;
+  const { streamData: liveData } = useStreamSingleSSE(data?.id);
+  const camera = liveData ? { ...data, ...liveData } : data;
+
+  if (!camera) return null;
 
   return (
     <Modal
@@ -23,8 +27,8 @@ const CameraDataModal = ({ isOpen, data, onClose }) => {
     >
       <ModalContent>
         <ModalHeader className="flex flex-col gap-1 pb-2">
-          <h3 className="text-xl font-bold text-gray-800">{data.name}</h3>
-          <p className="text-sm text-gray-500 font-normal">{data.address}</p>
+          <h3 className="text-xl font-bold text-gray-800">{camera.name}</h3>
+          <p className="text-sm text-gray-500 font-normal">{camera.address}</p>
         </ModalHeader>
 
         <Divider />
@@ -34,13 +38,13 @@ const CameraDataModal = ({ isOpen, data, onClose }) => {
             <Chip variant="flat" color="primary" size="sm">
               Kamera
             </Chip>
-            {data.status != null && (
+            {camera.status != null && (
               <Chip
                 variant="flat"
-                color={data.status ? "success" : "danger"}
+                color={camera.status ? "success" : "danger"}
                 size="sm"
               >
-                {data.status ? "Aktivna" : "Neaktivna"}
+                {camera.status ? "Aktivna" : "Neaktivna"}
               </Chip>
             )}
           </div>
@@ -50,9 +54,9 @@ const CameraDataModal = ({ isOpen, data, onClose }) => {
               <h4 className="text-sm font-semibold text-gray-700">Posljednja detekcija</h4>
             </div>
             <div className="flex items-center justify-center bg-gray-100 h-[280px]">
-              {data.lastImage ? (
+              {camera.lastFrameUrl ? (
                 <img
-                  src={data.lastImage}
+                  src={`${camera.lastFrameUrl}?t=${liveData?.updated_at ?? ""}`}
                   alt="Posljednja detekcija"
                   className="w-full h-full object-cover"
                 />
@@ -68,14 +72,14 @@ const CameraDataModal = ({ isOpen, data, onClose }) => {
             </div>
           </div>
 
-          {data.coordinates && (
+          {camera.coordinates && (
             <div className="mt-4 rounded-lg bg-gray-50 border border-gray-200 p-4">
               <h4 className="text-sm font-semibold text-gray-700 mb-2">Detalji</h4>
               <div className="flex flex-col gap-1.5 text-sm text-gray-600">
                 <div className="flex justify-between">
                   <span>Koordinate</span>
                   <span className="font-mono text-xs text-gray-500">
-                    {data.coordinates[1]?.toFixed(5)}, {data.coordinates[0]?.toFixed(5)}
+                    {camera.coordinates[1]?.toFixed(5)}, {camera.coordinates[0]?.toFixed(5)}
                   </span>
                 </div>
               </div>

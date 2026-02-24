@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useUserAuthorization } from "../hooks/UserAuthorization.jsx";
 import { Input, Button } from "@heroui/react";
+import { changePassword } from "../api/auth.js";
 
 const EyeToggle = ({ visible, onClick }) => (
   <button type="button" onClick={onClick} className="text-gray-400 hover:text-gray-600 focus:outline-none">
@@ -24,6 +25,7 @@ const UserAccountSettings = () => {
     newPassword: "",
     confirmPassword: "",
   });
+  const [status, setStatus] = useState(null); 
   const [show, setShow] = useState({
     newPassword: false,
     confirmPassword: false,
@@ -38,8 +40,16 @@ const UserAccountSettings = () => {
   const passwordMismatch =
     form.confirmPassword && form.newPassword !== form.confirmPassword;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setStatus(null);
+    try {
+      await changePassword(form.newPassword);
+      setForm({ newPassword: "", confirmPassword: "" });
+      setStatus("success");
+    } catch {
+      setStatus("error");
+    }
   };
 
   return (
@@ -47,7 +57,7 @@ const UserAccountSettings = () => {
 
       <h2 className="text-lg font-semibold text-gray-600">Postavke računa</h2>
 
-      {/* Profile info */}
+     
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm px-5 py-4">
         <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">Profil</h3>
         <div className="flex items-center gap-4">
@@ -63,7 +73,7 @@ const UserAccountSettings = () => {
         </div>
       </div>
 
-      {/* Change password */}
+      
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm px-5 py-4">
         <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">Promjena lozinke</h3>
 
@@ -101,7 +111,7 @@ const UserAccountSettings = () => {
             }
           />
 
-          <div className="pt-1">
+          <div className="pt-1 flex items-center gap-3">
             <Button
               type="submit"
               color="primary"
@@ -114,6 +124,12 @@ const UserAccountSettings = () => {
             >
               Spremi promjene
             </Button>
+            {status === "success" && (
+              <span className="text-xs text-emerald-600">Lozinka uspješno promijenjena.</span>
+            )}
+            {status === "error" && (
+              <span className="text-xs text-red-500">Greška pri promjeni lozinke.</span>
+            )}
           </div>
         </form>
       </div>

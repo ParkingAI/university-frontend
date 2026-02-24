@@ -10,6 +10,7 @@ import {
   Progress,
   Divider,
 } from "@heroui/react";
+import useParkingSingleSSE from "../api/parkingSingleSSE.js";
 
 const StatCard = ({ label, value, color }) => (
   <div className={`flex flex-col items-center justify-center rounded-xl border px-4 py-3 ${color}`}>
@@ -19,11 +20,14 @@ const StatCard = ({ label, value, color }) => (
 );
 
 const ParkingDataModal = ({ isOpen, data, onClose }) => {
-  if (!data) return null;
+  const { parkingData: liveData } = useParkingSingleSSE(data?.id);
+  const parking = liveData ?? data;
 
-  const total = data.Capacity || 0;
-  const occupied = data.occupied || 0;
-  const free = data.free ?? (total - occupied);
+  if (!parking) return null;
+
+  const total = parking.Capacity || 0;
+  const occupied = parking.occupied || 0;
+  const free = parking.free ?? (total - occupied);
   const isFull = free <= 0;
   const percentage = total > 0 ? Math.round((occupied / total) * 100) : 0;
 
@@ -37,23 +41,23 @@ const ParkingDataModal = ({ isOpen, data, onClose }) => {
     >
       <ModalContent>
         <ModalHeader className="flex flex-col gap-1 pb-2">
-          <h3 className="text-xl font-bold text-gray-800">{data.name}</h3>
-          <p className="text-sm text-gray-500 font-normal">{data.address}</p>
+          <h3 className="text-xl font-bold text-gray-800">{parking.name}</h3>
+          <p className="text-sm text-gray-500 font-normal">{parking.address}</p>
         </ModalHeader>
 
         <Divider />
 
         <ModalBody className="py-5">
-       
+
           <div className="flex gap-2 flex-wrap">
-            {data.zone && (
+            {parking.zone && (
               <Chip variant="flat" color="primary" size="sm">
-                {data.zone}
+                {parking.zone}
               </Chip>
             )}
-            {data.type && (
+            {parking.type && (
               <Chip variant="flat" color="secondary" size="sm">
-                {data.type}
+                {parking.type}
               </Chip>
             )}
             <Chip
@@ -101,23 +105,23 @@ const ParkingDataModal = ({ isOpen, data, onClose }) => {
             />
           </div>
 
-          
-          {(data.coordinates || data.parking_lots) && (
+
+          {(parking.coordinates || parking.parking_lots) && (
             <div className="mt-4 rounded-lg bg-gray-50 border border-gray-200 p-4">
               <h4 className="text-sm font-semibold text-gray-700 mb-2">Detalji</h4>
               <div className="flex flex-col gap-1.5 text-sm text-gray-600">
-                {data.coordinates && (
+                {parking.coordinates && (
                   <div className="flex justify-between">
                     <span>Koordinate</span>
                     <span className="font-mono text-xs text-gray-500">
-                      {data.coordinates[1]?.toFixed(5)}, {data.coordinates[0]?.toFixed(5)}
+                      {parking.coordinates[1]?.toFixed(5)}, {parking.coordinates[0]?.toFixed(5)}
                     </span>
                   </div>
                 )}
-                {data.parking_lots && (
+                {parking.parking_lots && (
                   <div className="flex justify-between">
                     <span>Parkirna mjesta</span>
-                    <span className="font-medium">{data.parking_lots.length}</span>
+                    <span className="font-medium">{parking.parking_lots.length}</span>
                   </div>
                 )}
               </div>

@@ -35,12 +35,12 @@ const Datagrid = ({
   searchKeys = ["name", "address", "zone"],
 }) => {
   
-  const { searchQuery, setSearchQuery } = useMap();
+  const { searchQuery, setSearchQuery, selectedZone, setSelectedZone } = useMap();
 
-  const filteredData = useMemo(
-    () => filterData(data, searchQuery, searchKeys),
-    [data, searchQuery, searchKeys]
-  );
+  const filteredData = useMemo(() => {
+    let result = selectedZone && selectedZone !== "all" ? data.filter((item) => item.zone === selectedZone) : data;
+    return filterData(result, searchQuery, searchKeys);
+  }, [data, searchQuery, selectedZone, searchKeys]);
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
@@ -49,8 +49,16 @@ const Datagrid = ({
           <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
         </div>
       )}
-      <div className="px-4 pt-3 pb-1 flex items-center justify-between">
+      <div className="px-4 pt-3 pb-1 flex items-center gap-3">
         <SearchInput value={searchQuery} onChange={setSearchQuery} />
+        {(searchQuery || selectedZone !== "all") && (
+          <button
+            onClick={() => { setSearchQuery(""); setSelectedZone("all"); }}
+            className="text-xs text-blue-500 hover:text-blue-700 transition-colors whitespace-nowrap"
+          >
+            Obriši filtere
+          </button>
+        )}
       </div>
       <div className="p-3">
         <Table aria-label={ariaLabel} isStriped>

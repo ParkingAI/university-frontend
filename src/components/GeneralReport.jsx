@@ -1,8 +1,9 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import { Select, SelectItem } from "@heroui/react";
+import { useMap } from "../hooks/MapContext.jsx";
 
 const GeneralReport = ({ parkingData = [] }) => {
-  const [selectedZone, setSelectedZone] = useState("all");
+  const { selectedZone, setSelectedZone } = useMap();
 
   const zones = useMemo(() => {
     const unique = [...new Set(parkingData.map((p) => p.zone).filter(Boolean))];

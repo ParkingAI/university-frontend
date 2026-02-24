@@ -15,11 +15,20 @@ export const userLogin = async (formData) => {
         );
         return response;
     } catch (error) {
-      console.log(error)
         return error;
     }
 };
 
+
+
+export const changePassword = async (newPassword) => {
+  const response = await axios.patch(
+    `${import.meta.env.VITE_API_URL}/auth/password`,
+    { newPassword },
+    { withCredentials: true }
+  );
+  return response;
+};
 
 //Check if user is logged in
 export const checkUser = async () => {

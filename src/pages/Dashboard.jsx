@@ -5,7 +5,7 @@ import Sidebar from '../components/Sidebar.jsx'
 import CamerasDashboard from "./CamerasDashboard.jsx"
 import UserAccountSettings from "./UserAccountSettings.jsx"
 import { Routes, Route } from "react-router-dom"
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { getAllParkings } from "../api/parkingApi.js"
 import { useUserAuthorization } from '../hooks/UserAuthorization.jsx'
 import { Tooltip } from "@heroui/react";
@@ -13,6 +13,7 @@ import { EyeIcon, EditIcon, DeleteIcon, MapPinIcon } from '../images/datagridIco
 import GeneralReport from '../components/GeneralReport.jsx'
 import ParkingDataModal from '../components/ParkingDataModal.jsx'
 import { MapProvider, useMap } from '../hooks/MapContext.jsx'
+import useParkingSSE from '../api/parkingSSE.js'
 
 const ParkingDashboard = ({ parkingData }) => {
   const { openPopup } = useMap();
@@ -105,11 +106,7 @@ const ParkingDashboard = ({ parkingData }) => {
                       <MapPinIcon />
                     </span>
                   </Tooltip>
-                  <Tooltip content="Uredi">
-                    <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                      <EditIcon />
-                    </span>
-                  </Tooltip>
+               
                 </div>
               );
             }
@@ -129,16 +126,17 @@ const ParkingDashboard = ({ parkingData }) => {
 
 const Dashboard = () => {
 
-  const queryClient = useQueryClient();
-
   const { user } = useUserAuthorization()
 
-  const { data: parkingData = [], isLoading, error } = useQuery({
+  const { data: parkingData = [] } = useQuery({
     queryKey: ["parkings", user?.cityId],
     queryFn: () => getAllParkings(user?.cityId),
     staleTime: 1000 * 60 * 60,
     enabled: !!user?.cityId
   });
+
+  useParkingSSE(user?.cityId);
+
   return (
     <div className="flex min-h-screen bg-white">
       <Sidebar />

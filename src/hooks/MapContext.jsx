@@ -5,6 +5,7 @@ const MapContext = createContext(null);
 export const MapProvider = ({ children }) => {
   const markerRefs = useRef({});
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedZone, setSelectedZone] = useState("all");
 
   const registerMarker = useCallback((id, markerRef) => {
     markerRefs.current[id] = markerRef;
@@ -22,7 +23,7 @@ export const MapProvider = ({ children }) => {
   }, []);
 
   return (
-    <MapContext.Provider value={{ registerMarker, unregisterMarker, openPopup, searchQuery, setSearchQuery }}>
+    <MapContext.Provider value={{ registerMarker, unregisterMarker, openPopup, searchQuery, setSearchQuery, selectedZone, setSelectedZone }}>
       {children}
     </MapContext.Provider>
   );

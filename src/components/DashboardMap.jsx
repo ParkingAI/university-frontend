@@ -41,20 +41,24 @@ const DashboardMap = ({
   searchKeys = ["name", "address", "zone"],
   renderPopup = defaultRenderPopup,
 }) => {
-  const { searchQuery } = useMap();
+  const { searchQuery, selectedZone } = useMap();
 
   const markerIcon = dataType === 'cameras' ? cameraPin : pin;
 
   const filteredData = useMemo(() => {
-    if (!searchQuery) return data;
-    const lower = searchQuery.toLowerCase();
-    return data.filter((item) =>
-      searchKeys.some((key) => {
-        const val = item[key];
-        return val != null && String(val).toLowerCase().includes(lower);
-      })
-    );
-  }, [data, searchQuery, searchKeys]);
+    let result = data;
+    if (selectedZone && selectedZone !== "all") result = result.filter((item) => item.zone === selectedZone);
+    if (searchQuery) {
+      const lower = searchQuery.toLowerCase();
+      result = result.filter((item) =>
+        searchKeys.some((key) => {
+          const val = item[key];
+          return val != null && String(val).toLowerCase().includes(lower);
+        })
+      );
+    }
+    return result;
+  }, [data, searchQuery, selectedZone, searchKeys]);
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
