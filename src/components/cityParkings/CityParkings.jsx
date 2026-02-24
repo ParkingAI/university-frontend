@@ -2,7 +2,7 @@ import React from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAllParkings } from "../../api/parkingApi.js";
 import { useParams } from "react-router";
-import { capitalizeRouteParam } from "../../../helpers/cityParkings.js";
+import { capitalizeRouteParam } from "../../helpers/cityParkings.js";
 import ParkingListFilters from "./ParkingListFilters.jsx";
 import ParkingList from "./ParkingList.jsx";
 import { Spinner } from "@heroui/react";

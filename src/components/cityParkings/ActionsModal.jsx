@@ -8,13 +8,36 @@ import {
   Button,
 } from "@heroui/react";
 import { Image } from "@heroui/react";
+import { CustomDatePicker } from "../ui/CustomDatePicker";
 const ActionsModal = ({ isOpen, data, onClose }) => {
+  const [reservationTime, setReservationTime] = React.useState({
+    date: null,
+    startTime: null,
+    endTime: null,
+  });
+
+  const isTimeInvalid =
+    reservationTime.startTime &&
+    reservationTime.endTime &&
+    reservationTime.startTime.compare(reservationTime.endTime) >= 0;
+
+  const isActionDisabled =
+    !reservationTime.date ||
+    !reservationTime.startTime ||
+    !reservationTime.endTime ||
+    isTimeInvalid;
+
   return (
     <Modal
       isOpen={isOpen}
-      onClose={() =>
-        onClose({ modal: "actionsModal", isOpen: false, data: null })
-      }
+      onClose={() => {
+        onClose({ modal: "actionsModal", isOpen: false, data: null });
+        setReservationTime({
+          date: null,
+          startTime: null,
+          endTime: null,
+        });
+      }}
     >
       <ModalContent>
         {data && (
@@ -30,7 +53,13 @@ const ActionsModal = ({ isOpen, data, onClose }) => {
               {data.mode === "vizualization" ? (
                 <Image isZoomed shadow="md" radius="md" src={data.src} />
               ) : (
-                <></>
+                <>
+                  <CustomDatePicker
+                    label={"Vrijeme rezervacije"}
+                    value={reservationTime}
+                    onChange={setReservationTime}
+                  />
+                </>
               )}
             </ModalBody>
             <ModalFooter>
@@ -49,7 +78,33 @@ const ActionsModal = ({ isOpen, data, onClose }) => {
                   Zatvori
                 </Button>
               ) : (
-                <></>
+                <>
+                  <Button
+                    color="danger"
+                    variant="flat"
+                    onPress={() => {
+                      onClose({
+                        modal: "actionsModal",
+                        isOpen: false,
+                        data: null,
+                      });
+                      setReservationTime({
+                        date: null,
+                        startTime: null,
+                        endTime: null,
+                      });
+                    }}
+                  >
+                    Zatvori
+                  </Button>
+                  <Button
+                    color="primary"
+                    variant="flat"
+                    isDisabled={isActionDisabled}
+                  >
+                    Spremi
+                  </Button>
+                </>
               )}
             </ModalFooter>
           </>

@@ -164,7 +164,10 @@ const ParkingModal = ({ isOpen, data, onClose, onPress }) => {
                     <TableColumn key={column.key}>{column.label}</TableColumn>
                   )}
                 </TableHeader>
-                <TableBody items={parkingLots}>
+                <TableBody
+                  items={parkingLots}
+                  emptyContent={"Nema parkinga za prikazati"}
+                >
                   {(item) => (
                     <TableRow key={item.id}>
                       {(columnKey) => (
